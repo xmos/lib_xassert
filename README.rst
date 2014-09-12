@@ -1,12 +1,9 @@
-Lock handling Library
-=====================
+Lightweight assertions library
+==============================
 
-This library provides access to hardware and software locks for use in
-concurrent C programs. In general it is not safe to use these to
-marshall within XC due to the assumptions XC
-makes about safe concurrent data access.
+This library provides a lightweight and flexible replacement for the
+standard C header ``assert.h``.
 
-Two types of locks are provided. Hardware locks are fast and power
-efficient but there are a limited number per tile. Software locks are
-slower but you can use an unlimited number of them.
-
+The assertions in this library can be be enabled/disabled
+and configured as to how much debug information they show. This
+configuration can be per "debug unit" (i.e. for sets of files).
