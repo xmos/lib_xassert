@@ -1,29 +1,9 @@
-Lightweight assertions library
-==============================
-.. rheader::
-
-  xassert |version|
-
-Lightweight assertions library
-------------------------------
-
-This library provides a lightweight and flexible replacement for the
-standard C header ``assert.h``.
-
-Features
-........
-
-  * Low memory usage
-  * Ability to enable or disable various features via compile time defines
+.. include:: ../../../README.rst
 
 Software version and dependencies
 .................................
 
-This document pertains to version |version| of the xassert library. It is
-intended to be used with version 13.x of the xTIMEcomposer studio tools.
-
-The library does not have any dependencies (i.e. it does not rely on any
-other libraries).
+.. libdeps::
 
 API
 ---
