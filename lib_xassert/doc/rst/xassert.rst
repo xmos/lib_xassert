@@ -26,7 +26,7 @@ If assertions are enabled and the expression in the assertion is false than a
 trap will occur.
 
 Unreachable
-..........
+...........
 
 If the logic of a program dictates that certain code cannot be reached, the
 ``unreachable`` macro can be used e.g.::
