@@ -1,8 +1,6 @@
 import xmostest
 
 def runtest():
-    xmostest.build("unreachable_test")
-     
     resources = xmostest.request_resource("xsim")
      
     tester = xmostest.ComparisonTester(open('unreachable_test.expect'),
