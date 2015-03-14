@@ -16,3 +16,8 @@ Features
 
   * Low memory usage
   * Ability to enable or disable various features via compile time defines
+
+Software version and dependencies
+.................................
+
+.. libdeps::
