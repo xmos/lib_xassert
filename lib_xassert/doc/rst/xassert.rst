@@ -106,3 +106,13 @@ XASSERT_DISABLE_DEBUG_[debug unit]
    Disable debug messages for a particular debug unit.  If set to 1,
    this overrides the default set by ``XASSERT_ENABLE_DEBUG`` for that
    debug unit .
+
+|appendix|
+
+Known Issues
+------------
+
+There are no known issues with this library.
+
+
+.. include:: ../../../CHANGELOG.rst
