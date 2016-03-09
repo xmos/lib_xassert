@@ -1,5 +1,5 @@
-Locks library change log
-========================
+lib_xassert change log
+======================
 
 2.0.1
 -----
