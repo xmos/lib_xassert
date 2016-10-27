@@ -1,6 +1,11 @@
 lib_xassert change log
 ======================
 
+2.1.0
+-----
+
+  * CHANGE: Renamed DEBUG_UNIT to XASSERT_UNIT to prevent conflict with lib_logging
+
 2.0.1
 -----
 

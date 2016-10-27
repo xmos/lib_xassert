@@ -77,27 +77,27 @@ XASSERT_ENABLE_LINE_NUMBERS
   assertion before trapping. Note that this option could significantly increase
   the code size of your application.
 
-If ``DEBUG_UNIT`` is defined when ``xassert.h`` is included then all the
+If ``XASSERT_UNIT`` is defined when ``xassert.h`` is included then all the
 assertions in that file belong to that unit. Assertions can then be
 controlled per debug unit. The mechanism is similar to that used in
 ``module_logging``.
 
-XASSERT_ENABLE_ASSERTIONS_[debug unit]
+XASSERT_ENABLE_ASSERTIONS_[xassert unit]
    Enable asserts for a particular debug unit. If set to 1,
    this overrides the default set by ``XASSERT_ENABLE_ASSERTIONS`` for
    that debug unit.
 
-XASSERT_ENABLE_DEBUG_[debug unit]
+XASSERT_ENABLE_DEBUG_[xassert unit]
    Enable debug messages for a particular debug unit.  If set to 1,
    this overrides the default set by ``XASSERT_ENABLE_DEBUG`` for that
    debug unit .
 
-XASSERT_DISABLE_ASSERTIONS_[debug unit]
+XASSERT_DISABLE_ASSERTIONS_[xassert unit]
    Disable asserts for a particular debug unit. If set to 1,
    this overrides the default set by ``XASSERT_ENABLE_ASSERTIONS`` for
    that debug unit.
 
-XASSERT_DISABLE_DEBUG_[debug unit]
+XASSERT_DISABLE_DEBUG_[xassert unit]
    Disable debug messages for a particular debug unit.  If set to 1,
    this overrides the default set by ``XASSERT_ENABLE_DEBUG`` for that
    debug unit .
