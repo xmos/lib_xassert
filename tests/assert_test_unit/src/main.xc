@@ -1,6 +1,6 @@
 // Copyright (c) 2015-2016, XMOS Ltd, All rights reserved
-#define XASSERT_ENABLE_DEBUG 1
-#define XASSERT_ENABLE_LINE_NUMBERS 1
+#define XASSERT_UNIT TESTER
+#define XASSERT_ENABLE_DEBUG_TESTER 1
 #include <xassert.h>
 
 void f(int x) {

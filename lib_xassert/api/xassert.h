@@ -10,8 +10,8 @@
 #include "debug_conf.h"
 #endif
 
-#ifndef DEBUG_UNIT
-#define DEBUG_UNIT APPLICATION
+#ifndef XASSERT_UNIT
+#define XASSERT_UNIT APPLICATION
 #endif
 
 #ifndef XASSERT_ENABLE_ASSERTIONS
@@ -29,11 +29,11 @@
 #define XASSERT_JOIN0(x,y) x ## y
 #define XASSERT_JOIN(x,y) XASSERT_JOIN0(x,y)
 
-#if XASSERT_JOIN(XASSERT_ENABLE_ASSERTIONS_,DEBUG_UNIT)
+#if XASSERT_JOIN(XASSERT_ENABLE_ASSERTIONS_,XASSERT_UNIT)
 #  define XASSERT_ENABLE_ASSERTIONS0 1
 #endif
 
-#if XASSERT_JOIN(XASSERT_DISABLE_ASSERTIONS_,DEBUG_UNIT)
+#if XASSERT_JOIN(XASSERT_DISABLE_ASSERTIONS_,XASSERT_UNIT)
 #  define XASSERT_ENABLE_ASSERTIONS0 0
 #endif
 
@@ -41,11 +41,11 @@
 #  define XASSERT_ENABLE_ASSERTIONS0 XASSERT_ENABLE_ASSERTIONS
 #endif
 
-#if XASSERT_JOIN(XASSERT_ENABLE_DEBUG_,DEBUG_UNIT)
+#if XASSERT_JOIN(XASSERT_ENABLE_DEBUG_,XASSERT_UNIT)
 #  define XASSERT_ENABLE_DEBUG0 1
 #endif
 
-#if XASSERT_JOIN(XASSERT_DISABLE_DEBUG_,DEBUG_UNIT)
+#if XASSERT_JOIN(XASSERT_DISABLE_DEBUG_,XASSERT_UNIT)
 #  define XASSERT_ENABLE_DEBUG0 0
 #endif
 
@@ -59,11 +59,11 @@
 
 #if XASSERT_ENABLE_LINE_NUMBERS
 #  define xassert_print_line do { printstr(" (" __FILE__ ":");    \
-                                  printint(__LINE__);         \
-                                  printstrln(")");            \
+                                  printint(__LINE__);             \
+                                  printstr(")\n");                \
                                 } while(0)
 #else
-#  define xassert_print_line do { printstrln(""); } while(0)
+#  define xassert_print_line do { printstr("\n"); } while(0)
 #endif
 
 
