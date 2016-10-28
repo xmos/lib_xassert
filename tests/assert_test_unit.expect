@@ -1,0 +1,2 @@
+x > 5 && xassert_msg("x is not greater than 5")
+Unhandled exception: ECALL, data: 0x00000000
