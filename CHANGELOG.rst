@@ -1,6 +1,11 @@
 lib_xassert change log
 ======================
 
+3.0.1
+-----
+
+  * CHANGE: Correct dates in LICENSE.txt files
+
 3.0.0
 -----
 
