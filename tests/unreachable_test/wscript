@@ -1,0 +1,9 @@
+
+def configure(conf):
+    conf.load('xwaf.compiler_xcc')
+
+def build(bld):
+    bld.env.TARGET_ARCH = 'SLICEKIT-L16'
+
+    depends_on = ['lib_xassert']
+    prog = bld.program(depends_on=depends_on)

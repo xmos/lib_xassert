@@ -1,0 +1,7 @@
+def use_module(bld):
+    sources = bld.path.ant_glob(['src/*.xc'])
+    bld.module(
+        source=sources,
+        includes='api',
+        optional_headers=['debug_conf.h', 'xassert_conf.h'],
+        version='3.0.1')
