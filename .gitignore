@@ -12,6 +12,7 @@
 **/pdf/*
 **/html/*
 **/.settings/*
+**/.venv/**
 
 # waf build files
 .lock-waf_*
