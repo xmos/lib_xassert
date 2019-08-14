@@ -7,8 +7,8 @@ pipeline {
     label 'x86_64&&brew'
   }
   environment {
-    VIEW = "${env.JOB_NAME.contains('PR-') ? 'lib_xassert_'+env.CHANGE_TARGET : 'lib_xassert_'+env.BRANCH_NAME}"
     REPO = 'lib_xassert'
+    VIEW = "${env.JOB_NAME.contains('PR-') ? REPO+'_'+env.CHANGE_TARGET : REPO+'_'+env.BRANCH_NAME}"
   }
   options {
     skipDefaultCheckout()
