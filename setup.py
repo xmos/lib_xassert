@@ -14,6 +14,5 @@ setuptools.setup(
     packages=setuptools.find_packages(where="lib/python"),
     install_requires=[
         "flake8~=3.8",
-        "tools_xmostest",
     ],
 )
