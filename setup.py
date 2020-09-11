@@ -13,4 +13,6 @@ setuptools.setup(
     install_requires=[
         "flake8~=3.8",
     ],
+    dependency_links=[
+    ],
 )
