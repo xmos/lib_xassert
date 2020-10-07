@@ -1,11 +1,15 @@
 lib_xassert change log
 ======================
 
+4.0.2
+-----
+
+  * REMOVED: not necessary cpanfile
+
 4.0.1
 -----
 
   * CHANGED: Pin Python package versions
-  * REMOVED: not necessary cpanfile
 
 4.0.0
 -----
