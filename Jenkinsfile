@@ -4,7 +4,7 @@ getApproval()
 
 pipeline {
   agent {
-    label 'x86_64&&brew'
+    label 'x86_64&&brew&&macOS'
   }
   environment {
     REPO = 'lib_xassert'
@@ -27,6 +27,14 @@ pipeline {
     stage('Tests') {
       steps {
         runXmostest("${REPO}", 'tests')
+      }
+    }
+    stage('Build docs') {
+      steps {
+        runXdoc("${REPO}/${REPO}/doc")
+
+        // Archive all the generated .pdf docs
+        archiveArtifacts artifacts: "${REPO}/**/pdf/*.pdf", fingerprint: true, allowEmptyArchive: true
       }
     }
   }
