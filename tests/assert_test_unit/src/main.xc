@@ -1,4 +1,5 @@
-// Copyright (c) 2015-2016, XMOS Ltd, All rights reserved
+// Copyright 2015-2021 XMOS LIMITED.
+// This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #define XASSERT_UNIT TESTER
 #define XASSERT_ENABLE_DEBUG_TESTER 1
 #include <xassert.h>
