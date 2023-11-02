@@ -1,6 +1,11 @@
 lib_xassert change log
 ======================
 
+UNRELEASED
+----------
+
+  * ADDED:     Support for XCommon CMake build system
+
 4.1.0
 -----
 
