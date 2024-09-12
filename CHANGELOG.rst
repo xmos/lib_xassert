@@ -1,6 +1,12 @@
 lib_xassert change log
 ======================
 
+UNRELEASED
+----------
+
+  * CHANGED: Build examples and tests using XCommon CMake instead of XCommon
+  * CHANGED: Run tests using pytest
+
 4.2.0
 -----
 
