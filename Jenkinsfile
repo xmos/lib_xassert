@@ -22,23 +22,37 @@ pipeline {
   stages {
     stage('Build') {
       parallel {
-        stage('xcore app build') {
+        stage('xcore app build and run tests') {
           agent {
             label 'x86_64 && linux'
           }
           steps {
             dir("${REPO}") {
               checkout scm
+ 
+              runLibraryChecks("${WORKSPACE}/${REPO}", "v2.0.0")
 
               dir("examples") {
                 withTools(params.TOOLS_VERSION) {
                   sh 'cmake -G "Unix Makefiles" -B build'
                   sh 'xmake -C build -j 8'
-                  stash name: 'examples', includes: '**/*.xe'
+                }
+              }
+
+              createVenv("requirements.txt")
+              withVenv() {
+                sh "pip install -r requirements.txt"
+              }
+              withTools(params.TOOLS_VERSION) {
+                withVenv() {
+                  dir("tests") {
+                    sh 'cmake -G "Unix Makefiles" -B build'
+                    sh 'xmake -C build -j 8'
+                    sh 'pytest runtests.py'
+                  }
                 }
               }
             }
-            runLibraryChecks("${WORKSPACE}/${REPO}", "v2.0.0")
           }
           post {
             cleanup {
@@ -72,34 +86,5 @@ pipeline {
         }
       }
     }
-
-    stage('xcore.ai Verification') {
-      agent {
-        label 'xcore.ai'
-      }
-      steps {
-        dir("${REPO}") {
-          checkout scm
-          createVenv("requirements.txt")
-          withVenv() {
-              sh "pip install -r requirements.txt"
-          }
-          withTools(params.TOOLS_VERSION) {
-            withVenv() {
-              dir("tests") {                
-                sh 'cmake -G "Unix Makefiles" -B build'
-                sh 'xmake -C build -j 8'
-                sh 'pytest runtests.py'
-              }
-            }
-          }
-        }
-      }
-      post {
-        cleanup {
-          xcoreCleanSandbox()
-        }
-      }
-    }// xcore.ai
   }
 }
