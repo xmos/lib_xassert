@@ -9,5 +9,5 @@
 
 void fn_no_assert(int x)
 {
-    xassert(x > 5 && msg("assert from fn_no_assert()"));
+    assert(x > 5 && msg("assert from fn_no_assert()"));
 }
