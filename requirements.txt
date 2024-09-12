@@ -16,7 +16,7 @@
 # procedure to set up a suitable python environment for that repository may
 # pip-install this one as editable using this repository's setup.py file.  The
 # same modules should appear in the setup.py list as given below.
-flake8==7.0.0
+pytest==8.3.2
 
 # Development dependencies
 #

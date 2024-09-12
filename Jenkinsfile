@@ -1,49 +1,105 @@
-@Library('xmos_jenkins_shared_library@v0.32.0') _
+@Library('xmos_jenkins_shared_library@develop') _
 
 getApproval()
 
 pipeline {
-  agent {
-    label 'x86_64&&linux'
-  }
+  agent none
   environment {
     REPO = 'lib_xassert'
-    VIEW = getViewName(REPO)
   }
   options {
+    buildDiscarder(xmosDiscardBuildSettings())
     skipDefaultCheckout()
+    timestamps()
+  }
+  parameters {
+    string(
+      name: 'TOOLS_VERSION',
+      defaultValue: '15.3.0',
+      description: 'The XTC tools version'
+    )
   }
   stages {
-    stage('Get view') {
-      steps {
-        xcorePrepareSandbox("${VIEW}", "${REPO}")
-      }
-    }
-    stage('Library checks') {
-      steps {
-        xcoreLibraryChecks("${REPO}")
-      }
-    }
-    stage('Tests') {
-      steps {
-        runXmostest("${REPO}", 'tests')
-      }
-    }
-    stage('Build docs') {
-      steps {
-        runXdoc("${REPO}/${REPO}/doc")
+    stage('Build') {
+      parallel {
+        stage('xcore app build') {
+          agent {
+            label 'x86_64 && linux'
+          }
+          steps {
+            dir("${REPO}") {
+              checkout scm
 
-        // Archive all the generated .pdf docs
-        archiveArtifacts artifacts: "${REPO}/**/pdf/*.pdf", fingerprint: true, allowEmptyArchive: true
+              dir("examples") {
+                withTools(params.TOOLS_VERSION) {
+                  sh 'cmake -G "Unix Makefiles" -B build'
+                  sh 'xmake -C build -j 8'
+                  stash name: 'examples', includes: '**/*.xe'
+                }
+              }
+            }
+            runLibraryChecks("${WORKSPACE}/${REPO}", "v2.0.0")
+          }
+          post {
+            cleanup {
+              xcoreCleanSandbox()
+            }
+          }
+        }
+        stage('Build docs') {
+          agent {
+            label 'documentation'
+          }
+          steps {
+            dir("${REPO}") {
+              checkout scm
+
+              withXdoc("v2.0.20.2.post0") {
+                withTools(params.TOOLS_VERSION) {
+                  dir("${REPO}/doc") {
+                    sh "xdoc xmospdf"
+                    archiveArtifacts artifacts: "pdf/*.pdf"
+                  }
+                }
+              }
+            }
+          }
+          post {
+            cleanup {
+              xcoreCleanSandbox()
+            }
+          }
+        }
       }
     }
-  }
-  post {
-    success {
-      updateViewfiles()
-    }
-    cleanup {
-      xcoreCleanSandbox()
-    }
+
+    stage('xcore.ai Verification') {
+      agent {
+        label 'xcore.ai'
+      }
+      steps {
+        dir("${REPO}") {
+          checkout scm
+          createVenv("requirements.txt")
+          withVenv() {
+              sh "pip install -r requirements.txt"
+          }
+          withTools(params.TOOLS_VERSION) {
+            withVenv() {
+              dir("tests") {                
+                sh 'cmake -G "Unix Makefiles" -B build'
+                sh 'xmake -C build -j 8'
+                sh 'pytest runtests.py'
+              }
+            }
+          }
+        }
+      }
+      post {
+        cleanup {
+          xcoreCleanSandbox()
+        }
+      }
+    }// xcore.ai
   }
 }
