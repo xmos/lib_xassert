@@ -18,19 +18,23 @@ pipeline {
       defaultValue: '15.3.0',
       description: 'The XTC tools version'
     )
+    string(
+      name: 'XMOSDOC_VERSION',
+      defaultValue: 'v6.0.0',
+      description: 'The xmosdoc version')
   }
   stages {
-    stage('Build') {
-      parallel {
-        stage('xcore app build and run tests') {
-          agent {
-            label 'x86_64 && linux'
-          }
+    stage('Build and test') {
+      agent {
+        label 'x86_64 && linux'
+      }
+      stages {
+        stage('Build examples') {
           steps {
+            println "Stage running on ${env.NODE_NAME}"
+
             dir("${REPO}") {
               checkout scm
- 
-              runLibraryChecks("${WORKSPACE}/${REPO}", "v2.0.0")
 
               dir("examples") {
                 withTools(params.TOOLS_VERSION) {
@@ -38,36 +42,14 @@ pipeline {
                   sh 'xmake -C build -j 8'
                 }
               }
+            }
+            runLibraryChecks("${WORKSPACE}/${REPO}")
+          }
+        }  // Build examples
 
-              createVenv("requirements.txt")
-              withVenv() {
-                sh "pip install -r requirements.txt"
-              }
-              withTools(params.TOOLS_VERSION) {
-                withVenv() {
-                  dir("tests") {
-                    sh 'cmake -G "Unix Makefiles" -B build'
-                    sh 'xmake -C build -j 8'
-                    sh 'pytest runtests.py'
-                  }
-                }
-              }
-            }
-          }
-          post {
-            cleanup {
-              xcoreCleanSandbox()
-            }
-          }
-        }
-        stage('Build docs') {
-          agent {
-            label 'documentation'
-          }
+        stage('Build documentation') {
           steps {
             dir("${REPO}") {
-              checkout scm
-
               withXdoc("v2.0.20.2.post0") {
                 withTools(params.TOOLS_VERSION) {
                   dir("${REPO}/doc") {
@@ -78,13 +60,72 @@ pipeline {
               }
             }
           }
-          post {
-            cleanup {
-              xcoreCleanSandbox()
+        }  // Build documentation
+
+        stage('Simulator tests') {
+          steps {
+            dir("${REPO}") {
+              withTools(params.TOOLS_VERSION) {
+                createVenv(reqFile: "tests/requirements.txt")
+                withVenv {
+                  dir("tests") {
+                    sh 'cmake -G "Unix Makefiles" -B build'
+                    sh 'xmake -C build -j 8'
+                    sh "pytest -n auto --junitxml=pytest_result.xml"
+                  }
+                }
+              }
             }
           }
         }
       }
-    }
+      post {
+        always {
+          junit "${REPO}/tests/pytest_result.xml"
+        }
+        cleanup {
+          xcoreCleanSandbox()
+        }
+      }
+    }  // Build and test
+
+    stage('Hardware tests') {
+      parallel {
+        stage('MacOS HW tests') {
+          agent {
+            label 'macos && arm64 && usb_audio && xcore.ai-mcab'
+          }
+          steps {
+            println "Stage running on ${env.NODE_NAME}"
+
+            dir("${REPO}") {
+              checkout scm
+              createVenv(reqFile: "requirements.txt")
+            }
+
+            dir("${REPO}/tests/xua_hw_tests") {
+              withTools(params.TOOLS_VERSION) {
+                sh "cmake -G 'Unix Makefiles' -B build"
+                sh "xmake -C build -j 8"
+
+                withVenv {
+                  withXTAG(["usb_audio_mc_xcai_dut"]) { xtagIds ->
+                    sh "pytest -v --junitxml=pytest_hw_mac.xml --xtag-id=${xtagIds[0]}"
+                  }
+                }
+              }
+            }
+          }
+          post {
+            always {
+              junit "${REPO}/tests/xua_hw_tests/pytest_hw_mac.xml"
+            }
+            cleanup {
+              xcoreCleanSandbox()
+            }
+          }
+        }  // MacOS HW tests
+      }
+    }  // Testing
   }
 }
