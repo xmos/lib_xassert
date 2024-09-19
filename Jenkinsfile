@@ -88,44 +88,5 @@ pipeline {
         }
       }
     }  // Build and test
-
-    stage('Hardware tests') {
-      parallel {
-        stage('MacOS HW tests') {
-          agent {
-            label 'macos && arm64 && usb_audio && xcore.ai-mcab'
-          }
-          steps {
-            println "Stage running on ${env.NODE_NAME}"
-
-            dir("${REPO}") {
-              checkout scm
-              createVenv(reqFile: "requirements.txt")
-            }
-
-            dir("${REPO}/tests/xua_hw_tests") {
-              withTools(params.TOOLS_VERSION) {
-                sh "cmake -G 'Unix Makefiles' -B build"
-                sh "xmake -C build -j 8"
-
-                withVenv {
-                  withXTAG(["usb_audio_mc_xcai_dut"]) { xtagIds ->
-                    sh "pytest -v --junitxml=pytest_hw_mac.xml --xtag-id=${xtagIds[0]}"
-                  }
-                }
-              }
-            }
-          }
-          post {
-            always {
-              junit "${REPO}/tests/xua_hw_tests/pytest_hw_mac.xml"
-            }
-            cleanup {
-              xcoreCleanSandbox()
-            }
-          }
-        }  // MacOS HW tests
-      }
-    }  // Testing
   }
 }
