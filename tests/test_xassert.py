@@ -8,7 +8,7 @@ import re
 test_path = Path(__file__).parent
 
 @pytest.mark.parametrize("test_name", [b.stem for b in test_path.rglob("*.xe")])
-def test(test_name):
+def test_xassert(test_name):
    test_bin = [b for b in test_path.rglob(f"{test_name}.xe")][0]
    expect_file = test_path / f"{test_name}.expect"
    with open(expect_file, "r") as fp:
@@ -54,7 +54,4 @@ def test(test_name):
 
          assert dut_without_main_xc == ref_without_main_xc # After removing the (<path_to_main.xc>/main.xc:<line_no>) part, everything else should match
          assert dut_main_line_num == ref_main_line_num # The main.xc:<line_no> bit should match
-
-if __name__ == "__main__":
-   test("assert_test")
 
