@@ -1,4 +1,4 @@
-.. include:: ../../../README.rst
+.. include:: ../../README.rst
 
 API
 ---
@@ -110,4 +110,4 @@ Known Issues
 There are no known issues with this library.
 
 
-.. include:: ../../../CHANGELOG.rst
+.. include:: ../../CHANGELOG.rst
