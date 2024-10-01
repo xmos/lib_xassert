@@ -43,7 +43,7 @@ pipeline {
                 }
               }
             }
-            runLibraryChecks("${WORKSPACE}/${REPO}")
+            runLibraryChecks("${WORKSPACE}/${REPO}", "v2.0.1")
           }
         }  // Build examples
 
