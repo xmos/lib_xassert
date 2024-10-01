@@ -1,4 +1,4 @@
-@Library('xmos_jenkins_shared_library@develop') _
+@Library('xmos_jenkins_shared_library@v0.34.0') _
 
 getApproval()
 
@@ -43,7 +43,7 @@ pipeline {
                 }
               }
             }
-            runLibraryChecks("${WORKSPACE}/${REPO}")
+            runLibraryChecks("${WORKSPACE}/${REPO}", "v2.0.1")
           }
         }  // Build examples
 
