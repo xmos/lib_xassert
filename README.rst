@@ -1,5 +1,5 @@
-lib_i2c
-#######
+lib_xassert
+###########
 
 :Version: 4.2.0
 :Vendor: XMOS
