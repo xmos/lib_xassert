@@ -102,7 +102,7 @@ XASSERT_DISABLE_DEBUG_[xassert unit]
    this overrides the default set by ``XASSERT_ENABLE_DEBUG`` for that
    debug unit .
 
-|appendix|
+|newpage|
 
 Known Issues
 ------------
