@@ -9,6 +9,7 @@ documentation:
   substitutions_path: doc/substitutions.inc
   root_doc: doc/rst/index.rst
   linkcheck_ignore_regex: ['']
+  cognidox_part_number: XM-006382-UG
   pdfs:
     doc/rst/index.rst:
       pdf_title: '{{title}}'
@@ -17,4 +18,6 @@ documentation:
       pdf_title: '{{title}} (README)'
       pdf_filename: '{{lib_name}}_v{{version}}_readme'
       pdf_short: yes
+software:
+  cognidox_part_number: XM-007507-SM
 
