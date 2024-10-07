@@ -6,7 +6,7 @@ lib_xassert: Lightweight Assertions Library
 ###########################################
 
 :vendor: XMOS
-:version: 4.2.0
+:version: 4.2.1
 :scope: General Use
 :description: Lightweight assertions library
 :category: General Purpose
