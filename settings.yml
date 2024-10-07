@@ -1,7 +1,7 @@
 ---
 lib_name: lib_xassert
 project: '{{lib_name}}'
-title: '{{lib_name}}: XMOS Lightweight Assertions Library'
+title: '{{lib_name}}: Lightweight Assertions Library'
 version: 4.2.0
 
 documentation:

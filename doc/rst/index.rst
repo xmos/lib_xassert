@@ -1,13 +1,28 @@
-.. include:: ../../README.rst
 
+###########################################
+lib_xassert: Lightweight Assertions Library
+###########################################
+
+************
+Introduction
+************
+
+This library provides a lightweight and flexible replacement for the
+standard C header ``assert.h``.
+
+The assertions in this library can be be enabled/disabled
+and configured as to how much information they show. This
+configuration can be per "xassert unit" (i.e. for sets of files).
+
+***
 API
----
+***
 
 To use the module you need to use ``lib_xassert`` in your application and
 include the ``xassert.h`` header.
 
 Assertions
-..........
+==========
 
 An assertion can be inserted into code with the ``assert`` macro e.g.::
 
@@ -21,7 +36,7 @@ If assertions are enabled and the expression in the assertion is false than a
 trap will occur.
 
 Unreachable
-...........
+===========
 
 If the logic of a program dictates that certain code cannot be reached, the
 ``unreachable`` macro can be used e.g.::
@@ -39,7 +54,7 @@ If the logic of a program dictates that certain code cannot be reached, the
 If assertions are enabled then this macro will cause a trap if executed.
 
 Fail
-....
+====
 
 A failure can be indicated with the ``fail`` macro e.g.::
 
@@ -51,8 +66,9 @@ unreachable in that an unreachable macro should never execute in a
 correct program whereas a fail could happen in catastrophic circumstances
 even if the program is correct.
 
+**********************
 Controlling assertions
-......................
+**********************
 
 Assertions can be enabled/disabled via command line options to your
 application build. The
@@ -102,12 +118,3 @@ XASSERT_DISABLE_DEBUG_[xassert unit]
    this overrides the default set by ``XASSERT_ENABLE_DEBUG`` for that
    debug unit .
 
-|newpage|
-
-Known Issues
-------------
-
-There are no known issues with this library.
-
-
-.. include:: ../../CHANGELOG.rst
