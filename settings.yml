@@ -2,7 +2,7 @@
 lib_name: lib_xassert
 project: '{{lib_name}}'
 title: '{{lib_name}}: Lightweight Assertions Library'
-version: 4.2.0
+version: 4.3.0
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
