@@ -1,17 +1,17 @@
 ---
 lib_name: lib_xassert
 project: '{{lib_name}}'
-title: '{{lib_name}}: Lightweight Assertions Library'
+title: '{{lib_name}}: Lightweight assertions library'
 version: 4.3.0
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
   substitutions_path: doc/substitutions.inc
-  root_doc: doc/rst/index.rst
+  root_doc: doc/rst/lib_xassert.rst
   linkcheck_ignore_regex: ['']
   cognidox_part_number: XM-006382-UG
   pdfs:
-    doc/rst/index.rst:
+    doc/rst/lib_xassert.rst:
       pdf_title: '{{title}}'
       pdf_filename: '{{lib_name}}_v{{version}}'
     README.rst:
