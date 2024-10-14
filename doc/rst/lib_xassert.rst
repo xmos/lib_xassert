@@ -1,25 +1,26 @@
 
-###########################################
-lib_xassert: Lightweight Assertions Library
-###########################################
+###############################
+lib_xassert: Assertions library
+###############################
 
 ************
 Introduction
 ************
 
-This library provides a lightweight and flexible replacement for the
-standard C header ``assert.h``.
+This library provides a lightweight and flexible replacement for the standard C header ``assert.h``.
 
-The assertions in this library can be be enabled/disabled
-and configured as to how much information they show. This
-configuration can be per "xassert unit" (i.e. for sets of files).
+The assertions in this library can be be enabled/disabled and configured as to how much information
+they show. This configuration can be per `xassert unit` (i.e. for sets of files).
+
+``lib_xassert`` is intended to be used with the `XCommon CMake <https://www.xmos.com/file/xcommon-cmake-documentation/?version=latest>`_
+, the `XMOS` application build and dependency management system.
 
 ***
 API
 ***
 
-To use the module you need to use ``lib_xassert`` in your application and
-include the ``xassert.h`` header.
+To use this module, include ``lib_xassert`` in the application's ``APP_DEPENDENT_MODULES`` list and
+include the ``xassert.h`` header file.
 
 Assertions
 ==========
@@ -32,14 +33,13 @@ Optionally a debug message can be added with the ``msg`` macro::
 
    assert(i < n && msg("i must be less than the array bound"));
 
-If assertions are enabled and the expression in the assertion is false than a
-trap will occur.
+If assertions are enabled and the expression in the assertion is false than a trap will occur.
 
 Unreachable
 ===========
 
-If the logic of a program dictates that certain code cannot be reached, the
-``unreachable`` macro can be used e.g.::
+If the logic of a program dictates that certain code cannot be reached, the ``unreachable`` macro
+can be used e.g.::
 
   switch (message) {
   case 0:
@@ -61,22 +61,20 @@ A failure can be indicated with the ``fail`` macro e.g.::
   if (reg_value != 0xA5)
     fail("device not connected properly")
 
-A fail will always cause a trap if executed. A failure differs from
-unreachable in that an unreachable macro should never execute in a
-correct program whereas a fail could happen in catastrophic circumstances
-even if the program is correct.
+A fail will always cause a trap if executed. A failure differs from unreachable in that an
+unreachable macro should never execute in a correct program whereas a fail could happen in
+catastrophic circumstances even if the program is correct.
 
 **********************
 Controlling assertions
 **********************
 
-Assertions can be enabled/disabled via command line options to your
-application build. The
-following defines can be set by using the ``-D`` option to the
-compiler. For example, the following in your application ``Makefile``
-will enable line numbers in assertion messages::
+Assertions can be enabled/disabled via command line options to your application build.
+The following defines can be set by using the ``-D`` option to the compiler.
+For example, the following in your application `CMakeLists.txt` will enable line numbers in
+assertion messages::
 
-  XCC_FLAGS = ... -DXASSERT_ENABLE_LINE_NUMBERS=1
+    set(APP_COMPILER_FLAGS -DXASSERT_ENABLE_LINE_NUMBERS=1)
 
 The following defines can be set:
 
