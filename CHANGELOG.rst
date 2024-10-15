@@ -1,6 +1,11 @@
 lib_xassert change log
 ======================
 
+4.3.1
+-----
+
+  * CHANGED: Documentation updates
+
 4.3.0
 -----
 
