@@ -1,4 +1,4 @@
-// Copyright 2014-2021 XMOS LIMITED.
+// Copyright 2014-2025 XMOS LIMITED.
 // This Software is subject to the terms of the XMOS Public Licence: Version 1.
 #ifndef __xassert_h__
 #define __xassert_h__
@@ -97,7 +97,17 @@
 #  define fail(msg) do { __builtin_trap();} while(0)
 #endif
 
-inline int xassert_msg(const char msg[]) { return 1; }
+
+#ifndef UNUSED
+#ifdef __XC__
+#define UNUSED(x)     do { x; } while(0);
+#else
+#define UNUSED(x)     (void)(x)
+#endif
+#endif // UNUSED
+
+
+inline int xassert_msg(const char msg[]) { UNUSED(msg); return 1; }
 
 #ifdef __XC__
 #define _msg(x) xassert_msg(x)
