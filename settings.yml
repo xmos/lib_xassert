@@ -11,6 +11,9 @@ documentation:
   root_doc: doc/rst/lib_xassert.rst
   linkcheck_ignore_regex: ['']
   cognidox_part_number: XM-006382-UG
+  doxygen_projects:
+    lib_xassert:
+      doxyfile_path: doc/Doxyfile.inc
   pdfs:
     doc/rst/lib_xassert.rst:
       pdf_title: '{{title}}'
