@@ -81,15 +81,12 @@ pipeline {
 
                 stage('Tests') {
                     steps {
-                        dir("${REPO_NAME}") {
+                        dir("${REPO_NAME}/tests") {
                             withTools(params.TOOLS_VERSION) {
-                                createVenv(reqFile: "tests/requirements.txt")
+                                createVenv(reqFile: "requirements.txt")
                                 withVenv {
-                                    dir("tests") {
-                                    sh 'cmake -G "Unix Makefiles" -B build'
-                                    sh 'xmake -C build -j'
+                                    xcoreBuild()
                                     sh "pytest -n auto --junitxml=pytest_result.xml"
-                                    }
                                 }
                             }
                         }

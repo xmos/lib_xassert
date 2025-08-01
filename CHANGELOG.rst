@@ -1,6 +1,11 @@
 lib_xassert change log
 ======================
 
+4.3.2
+-----
+
+  * FIXED:  Build warnings (when built with -Wextra)
+
 4.3.1
 -----
 
@@ -15,7 +20,7 @@ lib_xassert change log
 4.2.0
 -----
 
-  * ADDED: Support for XCommon CMake build system
+  * ADDED:  Support for XCommon CMake build system
 
 4.1.0
 -----
@@ -40,21 +45,21 @@ lib_xassert change log
 3.0.1
 -----
 
-  * CHANGE: Correct dates in LICENSE.txt files
+  * CHANGED: Correct dates in LICENSE.txt files
 
 3.0.0
 -----
 
-  * CHANGE: Renamed DEBUG_UNIT to XASSERT_UNIT to prevent conflict with
+  * CHANGED: Renamed DEBUG_UNIT to XASSERT_UNIT to prevent conflict with
     lib_logging
 
 2.0.1
 -----
 
-  * CHANGE: Update to source code license and copyright
+  * CHANGED: Update to source code license and copyright
 
 2.0.0
 -----
 
-  * CHANGE: Restructured library
+  * CHANGED: Restructured library
 

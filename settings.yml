@@ -3,7 +3,7 @@
 lib_name: lib_xassert
 project: '{{lib_name}}'
 title: '{{lib_name}}: Assertions library'
-version: 4.3.1
+version: 4.3.2
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
