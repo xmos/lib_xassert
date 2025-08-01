@@ -1,6 +1,6 @@
 // This file relates to internal XMOS infrastructure and should be ignored by external users
 
-@Library('xmos_jenkins_shared_library@v0.41.0') _
+@Library('xmos_jenkins_shared_library@v0.41.1') _
 
 getApproval()
 pipeline {
@@ -85,7 +85,7 @@ pipeline {
                             withTools(params.TOOLS_VERSION) {
                                 createVenv(reqFile: "requirements.txt")
                                 withVenv {
-                                    xcoreBuild()
+                                    xcoreBuild(archiveBins: false)
                                     sh "pytest -n auto --junitxml=pytest_result.xml"
                                 }
                             }
