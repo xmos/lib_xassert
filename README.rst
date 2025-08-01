@@ -5,16 +5,16 @@ lib_xassert: Assertions library
 ###############################
 
 :vendor: XMOS
-:version: 4.3.1
+:version: 4.3.2
 :scope: General Use
 :description: Lightweight assertions library
 :category: General Purpose
-:keywords: debugging, logging, printing
+:keywords: debugging, logging
 :devices: xcore.ai, xcore-200
 
-********
-Overview
-********
+*******
+Summary
+*******
 
 This library provides a lightweight and flexible replacement for the standard C header ``assert.h``.
 
@@ -25,31 +25,38 @@ they show. This configuration can be per `xassert unit` (i.e. for sets of files)
 Features
 ********
 
-  * Low memory usage
-  * Ability to enable or disable various features via compile time defines
+* Low memory usage
+* Ability to enable or disable various features via compile time defines
 
 ************
-Known Issues
+Known issues
 ************
+
   * None
+
+****************
+Development repo
+****************
+
+* `lib_xassert <https://www.github.com/xmos/lib_xassert>`_
 
 **************
-Required Tools
+Required tools
 **************
 
-  * XMOS XTC Tools: 15.3.0
+* XMOS XTC Tools: 15.3.1
 
 *********************************
-Required Libraries (dependencies)
+Required libraries (dependencies)
 *********************************
 
-  * None
+* None
 
 *************************
-Related Application Notes
+Related application notes
 *************************
 
-  * None
+* None
 
 *******
 Support

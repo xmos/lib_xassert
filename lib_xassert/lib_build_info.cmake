@@ -1,5 +1,5 @@
 set(LIB_NAME lib_xassert)
-set(LIB_VERSION 4.3.1)
+set(LIB_VERSION 4.3.2)
 set(LIB_INCLUDES api)
 set(LIB_DEPENDENT_MODULES "")
 set(LIB_OPTIONAL_HEADERS debug_conf.h xassert_conf.h)

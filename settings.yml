@@ -3,7 +3,7 @@
 lib_name: lib_xassert
 project: '{{lib_name}}'
 title: '{{lib_name}}: Assertions library'
-version: 4.3.1
+version: 4.3.2
 
 documentation:
   exclude_patterns_path: doc/exclude_patterns.inc
@@ -11,6 +11,9 @@ documentation:
   root_doc: doc/rst/lib_xassert.rst
   linkcheck_ignore_regex: ['']
   cognidox_part_number: XM-006382-UG
+  doxygen_projects:
+    lib_xassert:
+      doxyfile_path: doc/Doxyfile.inc
   pdfs:
     doc/rst/lib_xassert.rst:
       pdf_title: '{{title}}'
