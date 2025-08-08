@@ -6,7 +6,6 @@
 #define XASSERT_ENABLE_DEBUG_FN_ASSERT 1    /* Enable printing debug message when asserting */
 #define XASSERT_ENABLE_LINE_NUMBERS 1 /* Enable line numbers in assert messages */
 
-
 #include <xassert.h>
 
 void fn_assert(int x)

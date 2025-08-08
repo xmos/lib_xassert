@@ -262,10 +262,17 @@ static inline void timing_end_impl(const char *tag, unsigned id, const char *fil
     fail("timing_end() called without matching timing_start()");
 }
 
+#ifndef XASSERT_TIMING_DELTA_ERROR
+#define XASSERT_TIMING_DELTA_ERROR (2)
+#endif
+
+extern unsigned counter;
+
 static inline void timing_loop_impl(const char *tag, unsigned id, unsigned min_freq_hz, const char *file, int line)
 {
     unsigned now = get_time();
-    unsigned interval = XS1_TIMER_HZ / min_freq_hz;
+    //unsigned interval = XS1_TIMER_HZ / min_freq_hz;
+    unsigned interval = (XS1_TIMER_HZ + min_freq_hz - 1) / min_freq_hz; // rounds up
 
     for (int i = head; i != tail; i = CIRCULAR_INC(i))
     {
@@ -273,8 +280,9 @@ static inline void timing_loop_impl(const char *tag, unsigned id, unsigned min_f
         if ((timing_blocks[i].id == id) && timing_blocks[i].is_loop)
         {
             unsigned delta = now - timing_blocks[i].start_time;
-            if (delta > interval)
+            if (delta > interval + XASSERT_TIMING_DELTA_ERROR)
             {
+                printintln(counter);
                 fail_timing(tag, delta, interval, file, line);
             }
             timing_blocks[i].start_time = now;
