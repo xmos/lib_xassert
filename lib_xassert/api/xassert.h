@@ -5,7 +5,6 @@
 
 
 #ifdef __xassert_conf_h_exists__
-#error
 #include "xassert_conf.h"
 #endif
 
@@ -243,6 +242,7 @@ static inline void timing_start_impl(const char *tag, unsigned id, unsigned max_
 static inline void timing_end_impl(const char *tag, unsigned id, const char *file, int line)
 {
     unsigned now = get_time();
+
     for (int i = head; i != tail; i = CIRCULAR_INC(i))
     {
         if ((timing_blocks[i].id == id) && !timing_blocks[i].is_loop)
@@ -251,22 +251,26 @@ static inline void timing_end_impl(const char *tag, unsigned id, const char *fil
             {
                 fail_timing(tag, now - timing_blocks[i].start_time, timing_blocks[i].deadline - timing_blocks[i].start_time, file, line);
             }
-            for (int j = i; j != tail; j = CIRCULAR_INC(j))
+
+            int last = (tail == 0) ? MAX_TIMING_BLOCKS - 1 : tail - 1;
+            if (i != last)
             {
-                timing_blocks[j] = timing_blocks[CIRCULAR_INC(j)];
+                // swap in last active entry
+                timing_blocks[i] = timing_blocks[last];
             }
-            tail = (tail == 0) ? MAX_TIMING_BLOCKS - 1 : tail - 1;
-            return;
+
+            // logically remove the last entry
+            tail = last;
+            return ;
         }
     }
+
     fail("timing_end() called without matching timing_start()");
 }
 
 #ifndef XASSERT_TIMING_DELTA_ERROR
 #define XASSERT_TIMING_DELTA_ERROR (2)
 #endif
-
-extern unsigned counter;
 
 static inline void timing_loop_impl(const char *tag, unsigned id, unsigned min_freq_hz, const char *file, int line)
 {
@@ -282,7 +286,6 @@ static inline void timing_loop_impl(const char *tag, unsigned id, unsigned min_f
             unsigned delta = now - timing_blocks[i].start_time;
             if (delta > interval + XASSERT_TIMING_DELTA_ERROR)
             {
-                printintln(counter);
                 fail_timing(tag, delta, interval, file, line);
             }
             timing_blocks[i].start_time = now;
@@ -330,8 +333,6 @@ static inline void xassert_loop_exception(const char *tag)
 #define xassert_timing_start(tag, max_ticks) timing_start_impl(tag, XASSERT_TAG_ID(tag), max_ticks, __FILE__, __LINE__)
 #define xassert_timing_end(tag)              timing_end_impl(tag, XASSERT_TAG_ID(tag), __FILE__, __LINE__)
 #define xassert_loop_freq(tag, hz)           timing_loop_impl(tag, XASSERT_TAG_ID(tag), hz, __FILE__, __LINE__)
-// Optionally, a macro for exception for API symmetry:
-#define xassert_loop_exception(tag)          xassert_loop_exception(tag)
 
 #define XASSERT_TIMED_BLOCK(tag, max_ticks, body) \
     do { \
