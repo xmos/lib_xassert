@@ -1,6 +1,12 @@
 lib_xassert change log
 ======================
 
+4.3.3
+-----
+
+  * CHANGED:  Updated UNUSED() macro and added UNUSED_REF() macro to suppress
+    compiler warnings for unused variables and unused references.
+
 4.3.2
 -----
 
