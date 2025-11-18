@@ -98,6 +98,7 @@
 #endif
 
 
+/* UNUSED() works for variables and references */
 #ifndef UNUSED
 #ifdef __XC__
 #define UNUSED(x)     do { x; } while(0);
@@ -105,6 +106,15 @@
 #define UNUSED(x)     (void)(x)
 #endif
 #endif // UNUSED
+
+/* UNUSED_REF() works for resource: ports, interfaces, clocks, channels/chanends  */
+#ifndef UNUSED_RES
+#ifdef __XC__
+#define UNUSED_RES(x) do { unsafe { (void)(unsigned)(x); }  } while(0);
+#else
+#define UNUSED_RES(x) (void)(x)
+#endif
+#endif // UNUSED_RES
 
 
 inline int xassert_msg(const char msg[]) { UNUSED(msg); return 1; }
