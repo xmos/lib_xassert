@@ -117,7 +117,7 @@
 #endif // UNUSED_RES
 
 
-inline int xassert_msg(const char msg[]) { UNUSED(msg); return 1; }
+inline int xassert_msg(const char msg[]);
 
 #ifdef __XC__
 #define _msg(x) xassert_msg(x)
