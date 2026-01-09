@@ -11,6 +11,7 @@
 *.swn
 *~
 *.DS_Store
+*.vscode
 
 # Python
 *.pyc

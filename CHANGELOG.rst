@@ -1,6 +1,11 @@
 lib_xassert change log
 ======================
 
+UNRELEASED
+----------
+  
+  * CHANGED: Replaced xassert.xc with xassert.c for better toolchain compatibility.
+
 4.3.3
 -----
 
@@ -68,4 +73,3 @@ lib_xassert change log
 -----
 
   * CHANGED: Restructured library
-
