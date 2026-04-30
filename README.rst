@@ -5,11 +5,11 @@ lib_xassert: Assertions library
 ###############################
 
 :vendor: XMOS
-:version: 4.3.2
+:version: 4.3.3
 :scope: General Use
 :description: Lightweight assertions library
 :category: General Purpose
-:keywords: debugging, logging
+:keywords: Debug
 :devices: xcore.ai, xcore-200
 
 *******
