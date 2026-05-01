@@ -3,7 +3,6 @@
 #ifndef __xassert_h__
 #define __xassert_h__
 
-
 #ifdef __xassert_conf_h_exists__
 #include "xassert_conf.h"
 #endif
@@ -55,6 +54,10 @@
 #  define XASSERT_ENABLE_TIMING_ASSERTIONS0 0
 #endif
 
+#if !defined(XASSERT_ENABLE_TIMING_ASSERTIONS0)
+#  define XASSERT_ENABLE_TIMING_ASSERTIONS0 XASSERT_ENABLE_TIMING_ASSERTIONS
+#endif
+
 #if XASSERT_JOIN(XASSERT_ENABLE_DEBUG_,XASSERT_UNIT)
 #  define XASSERT_ENABLE_DEBUG0 1
 #endif
@@ -69,7 +72,9 @@
 
 #if XASSERT_ENABLE_DEBUG0
 #include "print.h"
+#if XASSERT_ENABLE_TIMING_ASSERTIONS0
 #include <stdio.h>
+#endif
 #endif
 
 #if XASSERT_ENABLE_LINE_NUMBERS
@@ -158,18 +163,22 @@ inline int xassert_msg(const char msg[]) { UNUSED(msg); return 1; }
 #define assert(...) xassert(__VA_ARGS__)
 #endif
 
-#ifndef __STDC__
+#if defined(__cplusplus) || defined(__XC__)
 extern "C" {
 #endif
 
-#ifndef MAX_TIMING_BLOCKS
-#define MAX_TIMING_BLOCKS 8
+#ifndef XASSERT_MAX_TIMING_BLOCKS
+#define XASSERT_MAX_TIMING_BLOCKS 8
 #endif
 
 #if XASSERT_ENABLE_TIMING_ASSERTIONS0
 
+#include <xs1.h>
+
 #ifdef __XC__
 # define UNSAFE unsafe
+#else
+# define UNSAFE
 #endif
 
 // DJB2 hash for string to int ID
@@ -188,7 +197,7 @@ static inline unsigned xassert_hash(const char *str)
 typedef struct {
     const char * UNSAFE tag;
     unsigned start_time;
-    unsigned deadline;
+    unsigned max_ticks;
     const char *file;
     int line;
     int is_loop;
@@ -203,18 +212,19 @@ static inline unsigned get_time(void)
     return time;
 }
 
-static timing_block_t timing_blocks[MAX_TIMING_BLOCKS];
+static timing_block_t timing_blocks[XASSERT_MAX_TIMING_BLOCKS];
 static int head = 0;
 static int tail = 0;
 
-#define CIRCULAR_INC(x) (((x) + 1) % MAX_TIMING_BLOCKS)
+#define CIRCULAR_INC(x) (((x) + 1) % XASSERT_MAX_TIMING_BLOCKS)
 #define CIRCULAR_FULL (CIRCULAR_INC(tail) == head)
 #define CIRCULAR_EMPTY (head == tail)
 
 static inline void drop_oldest_entry() { head = CIRCULAR_INC(head); }
 
-static inline void timing_start_impl(const char *tag, unsigned id, unsigned max_ticks, const char *file, int line)
+static inline void timing_start_impl(const char *tag, unsigned max_ticks, const char *file, int line)
 {
+    unsigned id = XASSERT_TAG_ID(tag);
     unsigned now = get_time();
 
     for (int i = head; i != tail; i = CIRCULAR_INC(i))
@@ -222,7 +232,7 @@ static inline void timing_start_impl(const char *tag, unsigned id, unsigned max_
         if (timing_blocks[i].id == id && !timing_blocks[i].is_loop)
         {
             timing_blocks[i].start_time = now;
-            timing_blocks[i].deadline = now + max_ticks;
+            timing_blocks[i].max_ticks = max_ticks;
             timing_blocks[i].file = file;
             timing_blocks[i].line = line;
             return;
@@ -239,7 +249,7 @@ static inline void timing_start_impl(const char *tag, unsigned id, unsigned max_
 
     timing_blocks[tail].tag = tag;
     timing_blocks[tail].start_time = now;
-    timing_blocks[tail].deadline = now + max_ticks;
+    timing_blocks[tail].max_ticks = max_ticks;
     timing_blocks[tail].file = file;
     timing_blocks[tail].line = line;
     timing_blocks[tail].is_loop = 0;
@@ -249,20 +259,24 @@ static inline void timing_start_impl(const char *tag, unsigned id, unsigned max_
     tail = CIRCULAR_INC(tail);
 }
 
-static inline void timing_end_impl(const char *tag, unsigned id, const char *file, int line)
+static inline void timing_end_impl(const char *tag, const char *file, int line)
 {
+    unsigned id = XASSERT_TAG_ID(tag);
     unsigned now = get_time();
 
     for (int i = head; i != tail; i = CIRCULAR_INC(i))
     {
         if ((timing_blocks[i].id == id) && !timing_blocks[i].is_loop)
         {
-            if (now > timing_blocks[i].deadline)
+            // Use unsigned delta arithmetic so timeout checks remain correct across timer wraparound.
+            unsigned elapsed = now - timing_blocks[i].start_time;
+            unsigned limit = timing_blocks[i].max_ticks;
+            if (elapsed > limit)
             {
-                fail_timing(tag, now - timing_blocks[i].start_time, timing_blocks[i].deadline - timing_blocks[i].start_time, file, line);
+                fail_timing(tag, elapsed, limit, file, line);
             }
 
-            int last = (tail == 0) ? MAX_TIMING_BLOCKS - 1 : tail - 1;
+            int last = (tail == 0) ? XASSERT_MAX_TIMING_BLOCKS - 1 : tail - 1;
             if (i != last)
             {
                 // swap in last active entry
@@ -282,9 +296,17 @@ static inline void timing_end_impl(const char *tag, unsigned id, const char *fil
 #define XASSERT_TIMING_DELTA_ERROR (2)
 #endif
 
-static inline void timing_loop_impl(const char *tag, unsigned id, unsigned min_freq_hz, const char *file, int line)
+static inline void timing_loop_impl(const char *tag, unsigned min_freq_hz, const char *file, int line)
 {
+    unsigned id = XASSERT_TAG_ID(tag);
     unsigned now = get_time();
+
+    if (min_freq_hz == 0)
+    {
+        fail("xassert_loop_freq() requires hz > 0");
+        return;
+    }
+
     //unsigned interval = XS1_TIMER_HZ / min_freq_hz;
     unsigned interval = (XS1_TIMER_HZ + min_freq_hz - 1) / min_freq_hz; // rounds up
 
@@ -314,7 +336,7 @@ static inline void timing_loop_impl(const char *tag, unsigned id, unsigned min_f
 
     timing_blocks[tail].tag = tag;
     timing_blocks[tail].start_time = now;
-    timing_blocks[tail].deadline = 0;
+    timing_blocks[tail].max_ticks = 0;
     timing_blocks[tail].loop_interval_ticks = interval;
     timing_blocks[tail].file = file;
     timing_blocks[tail].line = line;
@@ -334,15 +356,15 @@ static inline void xassert_loop_exception(const char *tag)
         {
             for (int j = i; j != tail; j = CIRCULAR_INC(j))
                 timing_blocks[j] = timing_blocks[CIRCULAR_INC(j)];
-            tail = (tail == 0) ? MAX_TIMING_BLOCKS - 1 : tail - 1;
+            tail = (tail == 0) ? XASSERT_MAX_TIMING_BLOCKS - 1 : tail - 1;
             break;
         }
     }
 }
 
-#define xassert_timing_start(tag, max_ticks) timing_start_impl(tag, XASSERT_TAG_ID(tag), max_ticks, __FILE__, __LINE__)
-#define xassert_timing_end(tag)              timing_end_impl(tag, XASSERT_TAG_ID(tag), __FILE__, __LINE__)
-#define xassert_loop_freq(tag, hz)           timing_loop_impl(tag, XASSERT_TAG_ID(tag), hz, __FILE__, __LINE__)
+#define xassert_timing_start(tag, max_ticks) timing_start_impl(tag, max_ticks, __FILE__, __LINE__)
+#define xassert_timing_end(tag)              timing_end_impl(tag, __FILE__, __LINE__)
+#define xassert_loop_freq(tag, hz)           timing_loop_impl(tag, hz, __FILE__, __LINE__)
 
 #define XASSERT_TIMED_BLOCK(tag, max_ticks, body) \
     do { \
@@ -357,13 +379,15 @@ static inline void xassert_loop_exception(const char *tag)
 #define xassert_timing_end(tag)
 #define xassert_loop_freq(tag, hz)
 #define xassert_loop_exception(tag)
-#define XASSERT_TIMED_BLOCK(tag, max_ticks, body) body
+#define XASSERT_TIMED_BLOCK(tag, max_ticks, body) \
+    do { \
+        body \
+    } while(0)
 
 #endif
 
-#ifndef __STDC__
+#if defined(__cplusplus) || defined(__XC__)
 }
 #endif
 
 #endif // __xassert_h__
-
