@@ -7,17 +7,19 @@
 #define XASSERT_ENABLE_LINE_NUMBERS                1 /* Enable line numbers in assertions */
 #include <xs1.h>
 #include <xassert.h>
+#include <xcore/hwtimer.h>
 
 void fn_assert()
 {
-    timer t;
-    unsigned time;
-    t :> time;
+    hwtimer_t t = hwtimer_alloc();
+    unsigned time = hwtimer_get_time(t);
 
     for(int i = 0; i< 5; i++)
     {
         time += (i * 5000);
-        t when timerafter(time) :> void;
+        hwtimer_wait_until(t, time);
         xassert_loop_freq("test loop", 10000);
     }
+
+    hwtimer_free(t);
 }

@@ -7,13 +7,12 @@
 
 #include <xs1.h>
 #include <xassert.h>
+#include <xcore/hwtimer.h>
 
 void fn_assert()
 {
     XASSERT_TIMED_BLOCK("test", 1000,
-        timer t;
-        unsigned time;
-        t :> time;
-        t when timerafter(time + 5000) :> void;
+        hwtimer_t t = hwtimer_alloc();
+        hwtimer_delay(t, 5000);
     );
 }
