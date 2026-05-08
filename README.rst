@@ -8,7 +8,7 @@ lib_xassert: Assertions library
 :version: 4.3.3
 :scope: General Use
 :description: Lightweight assertions library
-:category: General Purpose
+:category: General purpose
 :keywords: Debug
 :devices: xcore.ai, xcore-200
 
@@ -27,18 +27,21 @@ Features
 
 * Low memory usage
 * Ability to enable or disable various features via compile time defines
+* Timing assertion system to check that code executes within a specified time limit
 
 ************
 Known issues
 ************
 
-  * None
+  * Timing assertion APIs currently use translation-unit-local static state and are not thread safe;
+    xassert_timing_start()/xassert_timing_end() must be used within the same source file and from a
+    single thread (#64)
 
 ****************
 Development repo
 ****************
 
-* `lib_xassert <https://www.github.com/xmos/lib_xassert>`_
+* `lib_xassert <https://www.github.com/xmos/lib_xassert>`_ (https://www.github.com/xmos/lib_xassert)
 
 **************
 Required tools
@@ -62,4 +65,6 @@ Related application notes
 Support
 *******
 
-This package is supported by XMOS Ltd. Issues can be raised against the software at www.xmos.com/support
+This package is supported by XMOS Ltd. Issues can be raised against the software at
+`www.xmos.com/support <https://www.xmos.com/support>`_ or using GitHub `issues <https://github.com/xmos/lib_xassert/issues>`_.
+

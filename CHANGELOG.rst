@@ -3,7 +3,8 @@ lib_xassert change log
 
 UNRELEASED
 ----------
-  
+
+  * ADDED:   Timing based assert system
   * CHANGED: Replaced xassert.xc with xassert.c for better toolchain compatibility.
 
 4.3.3
