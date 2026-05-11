@@ -3,7 +3,7 @@
 lib_name: lib_xassert
 project: '{{lib_name}}'
 title: '{{lib_name}}: Assertions library'
-version: 4.3.3
+version: 5.0.0
 license: xmos_public_v1
 
 documentation:
