@@ -1,17 +1,18 @@
 lib_xassert change log
 ======================
 
-UNRELEASED
-----------
+5.0.0
+-----
 
   * ADDED:   Timing based assert system
-  * CHANGED: Replaced xassert.xc with xassert.c for better toolchain compatibility.
+  * CHANGED: Replaced xassert.xc with xassert.c for better toolchain
+    compatibility
 
 4.3.3
 -----
 
   * CHANGED:  Updated UNUSED() macro and added UNUSED_REF() macro to suppress
-    compiler warnings for unused variables and unused references.
+    compiler warnings for unused variables and unused references
 
 4.3.2
 -----
