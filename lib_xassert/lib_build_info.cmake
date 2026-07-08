@@ -4,4 +4,16 @@ set(LIB_INCLUDES api)
 set(LIB_DEPENDENT_MODULES "")
 set(LIB_OPTIONAL_HEADERS debug_conf.h xassert_conf.h)
 
+set(LIB_COMPILER_FLAGS  -Wall
+                        -Wextra
+                        -Wunused
+                        # -Wpadded
+                        -Wshadow
+                        -Wconversion
+                        -Wdiv-by-zero
+                        -Wfloat-equal
+                        -Wsign-compare
+)
+
+
 XMOS_REGISTER_MODULE()
