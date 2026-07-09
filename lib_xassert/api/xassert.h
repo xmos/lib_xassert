@@ -261,6 +261,9 @@ static inline void timing_start_impl(const char *tag, unsigned max_ticks, const 
 
 static inline void timing_end_impl(const char *tag, const char *file, int line)
 {
+    UNUSED(file);
+    UNUSED(line);
+
     unsigned id = XASSERT_TAG_ID(tag);
     unsigned now = get_time();
 
