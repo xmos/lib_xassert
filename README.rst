@@ -18,7 +18,7 @@ Summary
 
 This library provides a lightweight and flexible replacement for the standard C header ``assert.h``.
 
-The assertions in this library can be be enabled/disabled and configured as to how much information
+The assertions in this library can be enabled or disabled and configured to control how much information
 they show. This configuration can be per `xassert unit` (i.e. for sets of files).
 
 ********
@@ -28,6 +28,8 @@ Features
 * Low memory usage
 * Ability to enable or disable various features via compile time defines
 * Timing assertion system to check that code executes within a specified time limit
+* Support for XS and VX architectures
+* C and C++ support, with XC compatibility on XS
 
 ************
 Known issues
@@ -53,7 +55,7 @@ Required tools
 Required libraries (dependencies)
 *********************************
 
-* None
+* `lib_basix <https://www.github.com/xmos/lib_basix>`_ (https://www.github.com/xmos/lib_basix)
 
 *************************
 Related application notes
@@ -67,4 +69,3 @@ Support
 
 This package is supported by XMOS Ltd. Issues can be raised against the software at
 `www.xmos.com/support <https://www.xmos.com/support>`_ or using GitHub `issues <https://github.com/xmos/lib_xassert/issues>`_.
-

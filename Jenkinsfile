@@ -1,6 +1,6 @@
 // This file relates to internal XMOS infrastructure and should be ignored by external users
 
-@Library('xmos_jenkins_shared_library@v0.51.1') _
+@Library('xmos_jenkins_shared_library@v0.52.0') _
 
 getApproval()
 pipeline {
@@ -9,9 +9,14 @@ pipeline {
 
     parameters {
         string(
-            name: 'TOOLS_VERSION',
+            name: 'TOOLS_VERSION_XS',
             defaultValue: '15.3.1',
-            description: 'XTC tools version'
+            description: 'XS XTC tools version'
+        )
+        string(
+            name: 'TOOLS_VERSION_VX',
+            defaultValue: '-j --repo arch_vx_slipgate -b master -a XTC 131',
+            description: 'VX XTC tools version'
         )
         string(
             name: 'XMOSDOC_VERSION',
@@ -54,10 +59,65 @@ pipeline {
                     }
                 }
 
-                stage('Examples build') {
+                stage('Build XS') {
                     steps {
                         dir("${REPO_NAME}/examples") {
-                            xcoreBuild()
+                            xcoreBuild(
+                                toolsVersion: params.TOOLS_VERSION_XS,
+                                buildDir: 'build-xs',
+                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316'
+                            )
+                        }
+                    }
+                }
+
+                stage('Test XS') {
+                    steps {
+                        dir("${REPO_NAME}/tests") {
+                            xcoreBuild(
+                                toolsVersion: params.TOOLS_VERSION_XS,
+                                buildDir: 'build-xs',
+                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316 -DXASSERT_BUILD_XC_TESTS=ON',
+                                archiveBins: false
+                            )
+                            withTools(params.TOOLS_VERSION_XS) {
+                                createVenv(reqFile: 'requirements.txt')
+                                withVenv {
+                                    runPytest()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                stage('Build VX') {
+                    steps {
+                        dir("${REPO_NAME}/examples") {
+                            xcoreBuild(
+                                toolsVersion: params.TOOLS_VERSION_VX,
+                                buildDir: 'build-vx',
+                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416'
+                            )
+                        }
+                    }
+                }
+
+                stage('Test VX') {
+                    steps {
+                        dir("${REPO_NAME}/tests") {
+                            sh "find . -name '*.xe' -delete"
+                            xcoreBuild(
+                                toolsVersion: params.TOOLS_VERSION_VX,
+                                buildDir: 'build-vx',
+                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416 -DXASSERT_BUILD_XC_TESTS=OFF',
+                                archiveBins: false
+                            )
+                            withTools(params.TOOLS_VERSION_VX) {
+                                createVenv(reqFile: 'requirements.txt')
+                                withVenv {
+                                    runPytest()
+                                }
+                            }
                         }
                     }
                 }
@@ -74,20 +134,6 @@ pipeline {
                     steps {
                         dir(REPO_NAME) {
                             buildDocs()
-                        }
-                    }
-                }
-
-                stage('Tests') {
-                    steps {
-                        dir("${REPO_NAME}/tests") {
-                            withTools(params.TOOLS_VERSION) {
-                                createVenv(reqFile: "requirements.txt")
-                                withVenv {
-                                    xcoreBuild(archiveBins: false)
-                                    sh "pytest -n auto --junitxml=pytest_result.xml"
-                                }
-                            }
                         }
                     }
                 }
@@ -116,4 +162,3 @@ pipeline {
         }
     } // stages
 } // pipeline
-

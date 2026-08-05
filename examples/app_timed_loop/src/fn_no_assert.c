@@ -7,7 +7,7 @@
 
 #include <xs1.h>
 #include <xassert.h>
-#include <print.h>
+#include <basix/print.h>
 #include <xcore/hwtimer.h>
 
 void fn_no_assert()
