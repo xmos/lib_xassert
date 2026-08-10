@@ -4,16 +4,12 @@
 #define XASSERT_ENABLE_TIMING_ASSERTIONS 1
 
 #include <xassert.h>
-#include <xcore/hwtimer.h>
 
 int main(void)
 {
-    hwtimer_t t = hwtimer_alloc();
-
     xassert_loop_freq("timed-loop", 100000000);
-    hwtimer_delay(t, 100);
+    basix_delay_ticks(100);
     xassert_loop_freq("timed-loop", 100000000);
 
-    hwtimer_free(t);
     return 0;
 }

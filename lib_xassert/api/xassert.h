@@ -31,6 +31,8 @@
 #define XASSERT_ENABLE_LINE_NUMBERS 0
 #endif
 
+#include <basix/architecture.h>
+
 #define XASSERT_JOIN0(x,y) x ## y
 #define XASSERT_JOIN(x,y) XASSERT_JOIN0(x,y)
 
@@ -71,7 +73,7 @@
 #endif
 
 #if XASSERT_ENABLE_DEBUG0
-#include "print.h"
+#include <basix/print.h>
 #if XASSERT_ENABLE_TIMING_ASSERTIONS0
 #include <stdio.h>
 #endif
@@ -98,10 +100,10 @@
 #  if XASSERT_ENABLE_DEBUG0
 #    define xassert(e) do { if (!(e)) {\
        printstr(#e); xassert_print_line; \
-      __builtin_trap();} \
+      basix_trap();} \
       } while(0)
 #  else
-#    define xassert(e) do { if (!(e)) __builtin_trap();} while(0)
+#    define xassert(e) do { if (!(e)) basix_trap();} while(0)
 #  endif
 #else
 #  define xassert(e)   // disabled
@@ -109,26 +111,26 @@
 
 #if XASSERT_ENABLE_ASSERTIONS0
 #  if XASSERT_ENABLE_DEBUG0
-#    define unreachable(msg) do { printstr(msg); xassert_print_line; __builtin_trap();} while(0)
+#    define unreachable(msg) do { printstr(msg); xassert_print_line; basix_trap();} while(0)
 #  else
-#    define unreachable(msg) do { __builtin_trap();} while(0)
+#    define unreachable(msg) do { basix_trap();} while(0)
 #  endif
 #else
 #  define unreachable(msg) do { __builtin_unreachable();} while(0)
 #endif
 
 #if XASSERT_ENABLE_DEBUG0
-#  define fail(msg) do { printstr(msg); xassert_print_line; __builtin_trap();} while(0)
+#  define fail(msg) do { printstr(msg); xassert_print_line; basix_trap();} while(0)
 #  define fail_timing(tag, actual, limit, file, line) do { printstr("Timing failed for: "); \
                                 printf("%s", (const char *) tag); \
                                 fflush(stdout); \
                                 printstr("\nΔt = "); printint(actual); printstr(" ticks ("); printint((actual) * 10); printstr(" ns), "); \
                                 printstr("limit = "); printint(limit); printstr(" ticks ("); printint((limit) * 10); printstr(" ns) "); \
-                                xassert_timing_print_line(file, line); __builtin_trap();\
+                                xassert_timing_print_line(file, line); basix_trap();\
                               } while(0)
 #else
-#  define fail(msg) do { __builtin_trap();} while(0)
-#  define fail_timing(tag, actual, limit, file, line) do { __builtin_trap();} while(0)
+#  define fail(msg) do { basix_trap();} while(0)
+#  define fail_timing(tag, actual, limit, file, line) do { basix_trap();} while(0)
 #endif
 
 /* UNUSED() works for variables and references */
@@ -173,8 +175,6 @@ extern "C" {
 
 #if XASSERT_ENABLE_TIMING_ASSERTIONS0
 
-#include <xs1.h>
-
 #ifdef __XC__
 # define UNSAFE unsafe
 #else
@@ -207,9 +207,7 @@ typedef struct {
 
 static inline unsigned get_time(void)
 {
-    unsigned time;
-    asm volatile("gettime %0" : "=r"(time));
-    return time;
+    return basix_time_now();
 }
 
 static timing_block_t timing_blocks[XASSERT_MAX_TIMING_BLOCKS];
@@ -310,8 +308,7 @@ static inline void timing_loop_impl(const char *tag, unsigned min_freq_hz, const
         return;
     }
 
-    //unsigned interval = XS1_TIMER_HZ / min_freq_hz;
-    unsigned interval = (XS1_TIMER_HZ + min_freq_hz - 1) / min_freq_hz; // rounds up
+    unsigned interval = (BASIX_TIMER_HZ + min_freq_hz - 1) / min_freq_hz; // rounds up
 
     for (int i = head; i != tail; i = CIRCULAR_INC(i))
     {

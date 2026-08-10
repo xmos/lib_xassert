@@ -1,6 +1,13 @@
 lib_xassert change log
 ======================
 
+UNRELEASED
+----------
+
+  * ADDED:   Support for building and testing on XS and VX architectures.
+  * ADDED:   C assertion tests while retaining XC compatibility tests on XS.
+  * CHANGED: Use lib_basix for portable trap, printing and timer support.
+
 5.0.0
 -----
 
