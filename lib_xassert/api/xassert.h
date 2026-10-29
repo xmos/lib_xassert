@@ -176,9 +176,9 @@ extern "C" {
 #if XASSERT_ENABLE_TIMING_ASSERTIONS0
 
 #ifdef __XC__
-# define UNSAFE unsafe
+# define XASSERT_UNSAFE unsafe
 #else
-# define UNSAFE
+# define XASSERT_UNSAFE
 #endif
 
 // DJB2 hash for string to int ID
@@ -195,7 +195,7 @@ static inline unsigned xassert_hash(const char *str)
 #define XASSERT_TAG_ID(tag) (xassert_hash(tag))
 
 typedef struct {
-    const char * UNSAFE tag;
+    const char * XASSERT_UNSAFE tag;
     unsigned start_time;
     unsigned max_ticks;
     const char *file;
