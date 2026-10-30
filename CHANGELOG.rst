@@ -1,8 +1,8 @@
 lib_xassert change log
 ======================
 
-UNRELEASED
-----------
+5.1.0
+-----
 
   * ADDED:   Support for building and testing on XS and VX architectures.
   * ADDED:   C assertion tests while retaining XC compatibility tests on XS.
