@@ -7,6 +7,8 @@ UNRELEASED
   * ADDED:   Support for building and testing on XS and VX architectures.
   * ADDED:   C assertion tests while retaining XC compatibility tests on XS.
   * CHANGED: Use lib_basix for portable trap, printing and timer support.
+  * FIXED:   Namespace the timing assertion's internal unsafe qualifier macro
+    to avoid collisions with headers using UNSAFE (issue #69).
 
 5.0.0
 -----
