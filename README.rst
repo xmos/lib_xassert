@@ -5,7 +5,7 @@ lib_xassert: Assertions library
 ###############################
 
 :vendor: XMOS
-:version: 5.0.0
+:version: 5.1.0
 :scope: General Use
 :description: Lightweight assertions library
 :category: General purpose
@@ -35,7 +35,7 @@ Features
 Known issues
 ************
 
-  * Timing assertion APIs currently use translation-unit-local static state and are not thread safe;
+* Timing assertion APIs currently use translation-unit-local static state and are not thread safe;
     xassert_timing_start()/xassert_timing_end() must be used within the same source file and from a
     single thread (#64)
 
