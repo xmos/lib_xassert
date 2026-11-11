@@ -83,7 +83,7 @@ pipeline {
                             withTools(params.TOOLS_VERSION_XS) {
                                 createVenv(reqFile: 'requirements.txt')
                                 withVenv {
-                                    runPytest()
+                                    runPytest("--xassert-build-xc-tests=on")
                                 }
                             }
                         }
@@ -117,7 +117,7 @@ pipeline {
                             withTools(params.TOOLS_VERSION_VX) {
                                 createVenv(reqFile: 'requirements.txt')
                                 withVenv {
-                                    runPytest()
+                                    runPytest("--xassert-build-xc-tests=off")
                                 }
                             }
                         }
