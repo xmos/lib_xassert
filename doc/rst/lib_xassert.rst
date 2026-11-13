@@ -42,6 +42,19 @@ removes ``assert()`` (when defined by this library) and ``xassert()`` checks wit
 timing assertions. Disabling timing assertions does not disable ordinary assertions. See
 `Controlling assertions`_.
 
+.. warning:: As with the standard C ``assert()``, the expression is not evaluated when ordinary
+   assertions are disabled. Do not put code that must always run, such as a function call with
+   side effects, inside ``assert()`` or ``xassert()``. For example, in the following the device is
+   never initialised when assertions are disabled::
+
+      xassert(device_init() == 0);
+
+   Make the call outside the assertion and check its result. To trap on the error in every
+   build, use ``fail()``, which is not affected by the assertion settings::
+
+      if (device_init() != 0)
+        fail("device initialisation failed");
+
 Unreachable
 ===========
 
