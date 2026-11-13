@@ -25,7 +25,7 @@ pipeline {
         )
         string(
             name: 'INFR_APPS_VERSION',
-            defaultValue: 'v3.4.0',
+            defaultValue: 'v3.6.0',
             description: 'The infr_apps version'
         )
     }
@@ -65,7 +65,7 @@ pipeline {
                             xcoreBuild(
                                 toolsVersion: params.TOOLS_VERSION_XS,
                                 buildDir: 'build-xs',
-                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316'
+                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316 -DXASSERT_BUILD_XC_EXAMPLES=ON'
                             )
                         }
                     }
@@ -83,7 +83,7 @@ pipeline {
                             withTools(params.TOOLS_VERSION_XS) {
                                 createVenv(reqFile: 'requirements.txt')
                                 withVenv {
-                                    runPytest()
+                                    runPytest("--xassert-build-xc-tests=on")
                                 }
                             }
                         }
@@ -93,10 +93,12 @@ pipeline {
                 stage('Build VX') {
                     steps {
                         dir("${REPO_NAME}/examples") {
+                            // Do not include stale XS binaries in the VX archive.
+                            sh "find . -name '*.xe' -delete"
                             xcoreBuild(
                                 toolsVersion: params.TOOLS_VERSION_VX,
                                 buildDir: 'build-vx',
-                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416'
+                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416 -DXASSERT_BUILD_XC_EXAMPLES=OFF'
                             )
                         }
                     }
@@ -115,7 +117,7 @@ pipeline {
                             withTools(params.TOOLS_VERSION_VX) {
                                 createVenv(reqFile: 'requirements.txt')
                                 withVenv {
-                                    runPytest()
+                                    runPytest("--xassert-build-xc-tests=off")
                                 }
                             }
                         }

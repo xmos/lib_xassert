@@ -6,7 +6,9 @@ lib_xassert change log
 
   * ADDED:   Support for building and testing on XS and VX architectures.
   * ADDED:   C assertion tests while retaining XC compatibility tests on XS.
-  * ADDED:   AGENTS.md to provide guidance for AI coding agents.
+  * FIXED:   Keep ordinary and timing assertion enable controls independent.
+  * ADDED:   C and XC regression tests for global and per-unit assertion
+    controls.
   * CHANGED: Use lib_basix for portable trap, printing and timer support.
   * FIXED:   Namespace the timing assertion's internal unsafe qualifier macro to
     avoid collisions with headers using UNSAFE (issue #69).
