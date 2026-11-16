@@ -15,7 +15,7 @@ lib_xassert change log
 
   * Changes to dependencies:
 
-    - lib_basix: Added dependency 0.1.0
+    - lib_basix: Added dependency 0.1.1
 
 5.0.0
 -----
