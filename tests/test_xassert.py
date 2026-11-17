@@ -34,7 +34,8 @@ def assert_expected_output(dut, expected_output):
     else:
         assert dut_norm == exp_norm
 
-@pytest.mark.parametrize("test_name", [b.stem for b in test_path.rglob("*.xe")])
+# Multi-configuration control tests have their own explicit matrix runner.
+@pytest.mark.parametrize("test_name", [b.stem for b in test_path.glob("*/bin/*.xe")])
 def test_xassert(test_name):
     test_bin = [b for b in test_path.rglob(f"{test_name}.xe")][0]
     expect_file = test_path / f"{test_name}.expect"

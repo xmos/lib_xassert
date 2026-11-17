@@ -96,7 +96,7 @@
 #  define xassert_timing_print_line(file, line) do { printstr("\n"); } while(0)
 #endif
 
-#if XASSERT_ENABLE_ASSERTIONS0 || XASSERT_ENABLE_TIMING_ASSERTIONS0
+#if XASSERT_ENABLE_ASSERTIONS0
 #  if XASSERT_ENABLE_DEBUG0
 #    define xassert(e) do { if (!(e)) {\
        printstr(#e); xassert_print_line; \

@@ -1,6 +1,6 @@
 // This file relates to internal XMOS infrastructure and should be ignored by external users
 
-@Library('xmos_jenkins_shared_library@v0.52.0') _
+@Library('xmos_jenkins_shared_library@v0.56.0') _
 
 getApproval()
 pipeline {
@@ -14,18 +14,18 @@ pipeline {
             description: 'XS XTC tools version'
         )
         string(
-            name: 'TOOLS_VERSION_VX',
-            defaultValue: '-j --repo arch_vx_slipgate -b master -a XTC 131',
-            description: 'VX XTC tools version'
+            name: 'TOOLS_VERSION_VX_XCC',
+            defaultValue: 'slipgate@master:143',
+            description: 'VX (XTC) tools version'
         )
         string(
             name: 'XMOSDOC_VERSION',
-            defaultValue: 'v8.0.3',
+            defaultValue: 'v8.1.2',
             description: 'xmosdoc version'
         )
         string(
             name: 'INFR_APPS_VERSION',
-            defaultValue: 'v3.4.0',
+            defaultValue: 'v3.6.0',
             description: 'The infr_apps version'
         )
     }
@@ -59,64 +59,20 @@ pipeline {
                     }
                 }
 
-                stage('Build XS') {
+                stage('Examples build') {
                     steps {
                         dir("${REPO_NAME}/examples") {
-                            xcoreBuild(
-                                toolsVersion: params.TOOLS_VERSION_XS,
-                                buildDir: 'build-xs',
-                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316'
-                            )
-                        }
-                    }
-                }
-
-                stage('Test XS') {
-                    steps {
-                        dir("${REPO_NAME}/tests") {
-                            xcoreBuild(
-                                toolsVersion: params.TOOLS_VERSION_XS,
-                                buildDir: 'build-xs',
-                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316 -DXASSERT_BUILD_XC_TESTS=ON',
-                                archiveBins: false
-                            )
+                            // Explicit builds omit vx4-clang and keep XC examples XS-only.
                             withTools(params.TOOLS_VERSION_XS) {
-                                createVenv(reqFile: 'requirements.txt')
-                                withVenv {
-                                    runPytest()
-                                }
+                                xcoreBuild(
+                                    cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316 -DXASSERT_BUILD_XC_EXAMPLES=ON'
+                                )
                             }
-                        }
-                    }
-                }
 
-                stage('Build VX') {
-                    steps {
-                        dir("${REPO_NAME}/examples") {
-                            xcoreBuild(
-                                toolsVersion: params.TOOLS_VERSION_VX,
-                                buildDir: 'build-vx',
-                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416'
-                            )
-                        }
-                    }
-                }
-
-                stage('Test VX') {
-                    steps {
-                        dir("${REPO_NAME}/tests") {
-                            sh "find . -name '*.xe' -delete"
-                            xcoreBuild(
-                                toolsVersion: params.TOOLS_VERSION_VX,
-                                buildDir: 'build-vx',
-                                cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416 -DXASSERT_BUILD_XC_TESTS=OFF',
-                                archiveBins: false
-                            )
-                            withTools(params.TOOLS_VERSION_VX) {
-                                createVenv(reqFile: 'requirements.txt')
-                                withVenv {
-                                    runPytest()
-                                }
+                            withTools(params.TOOLS_VERSION_VX_XCC) {
+                                xcoreBuild(
+                                    cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416 -DXASSERT_BUILD_XC_EXAMPLES=OFF'
+                                )
                             }
                         }
                     }
@@ -138,6 +94,37 @@ pipeline {
                     }
                 }
 
+                stage('Tests') {
+                    steps {
+                        dir("${REPO_NAME}/tests") {
+                            createVenv(reqFile: "requirements.txt")
+                            withVenv {
+                                withTools(params.TOOLS_VERSION_XS) {
+                                    xcoreBuild(
+                                        archiveBins: false,
+                                        cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU316 -DXASSERT_BUILD_XC_TESTS=ON'
+                                    )
+                                    runPytest("--xassert-build-xc-tests=on")
+                                }
+
+                                // Application bin directories are shared between architectures.
+                                // test_xassert.py auto-discovers binaries, including stale XS XC
+                                // tests that are not rebuilt for VX. Remove them before discovery.
+                                // TODO: Remove cleanup once binary outputs are isolated per build:
+                                // https://github.com/xmos/xcommon_cmake/issues/229
+                                sh "find . -name '*.xe' -delete"
+                                withTools(params.TOOLS_VERSION_VX_XCC) {
+                                    xcoreBuild(
+                                        archiveBins: false,
+                                        cmakeOpts: '-DAPP_HW_TARGET=XK-EVK-XU416 -DXASSERT_BUILD_XC_TESTS=OFF'
+                                    )
+                                    runPytest("--xassert-build-xc-tests=off")
+                                }
+                            }
+                        }
+                    }
+                }
+
                 stage("Archive sandbox") {
                     steps {
                         archiveSandbox(REPO_NAME)
@@ -155,7 +142,6 @@ pipeline {
             when {
                 expression { triggerRelease.isReleasable() }
             }
-
             steps {
                 triggerRelease()
             }
